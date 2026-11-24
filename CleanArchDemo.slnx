@@ -1,15 +1,36 @@
 <Solution>
-  <Folder Name="/ContentService/">
-    <Project Path="ContentService.API/ContentService.API.csproj" />
-    <Project Path="ContentService.Application/ContentService.Application.csproj" />
-    <Project Path="ContentService.Domain/ContentService.Domain.csproj" />
-    <Project Path="ContentService.Infrastructure/ContentService.Infrastructure.csproj" />
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="README.md" />
+    <File Path="RUNNING.md" />
   </Folder>
-  <Folder Name="/UserService/">
-    <Project Path="UserService.API/UserService.API.csproj" />
-    <Project Path="UserService.Application/UserService.Application.csproj" />
-    <Project Path="UserService.Domain/UserService.Domain.csproj" />
-    <Project Path="UserService.Infrastructure/UserService.Infrastructure.csproj" />
+  <Folder Name="/Solution Items/docs/">
+    <File Path="docs/api-gateway.md" />
+    <File Path="docs/api-reference.md" />
+    <File Path="docs/architecture.md" />
+    <File Path="docs/concepts.md" />
+    <File Path="docs/content-service.md" />
+    <File Path="docs/development.md" />
+    <File Path="docs/frontend.md" />
+    <File Path="docs/startup.md" />
+    <File Path="docs/troubleshooting.md" />
+    <File Path="docs/user-service.md" />
+    <File Path="docs/walkthrough.md" />
   </Folder>
-  <Project Path="ApiGateway/ApiGateway.csproj" Id="9b5df8c7-88a2-4cf8-b626-52ce83658d76" />
+  <Folder Name="/src/" />
+  <Folder Name="/src/ContentService/">
+    <Project Path="src/ContentService/ContentService.API/ContentService.API.csproj" />
+    <Project Path="src/ContentService/ContentService.Application/ContentService.Application.csproj" />
+    <Project Path="src/ContentService/ContentService.Domain/ContentService.Domain.csproj" />
+    <Project Path="src/ContentService/ContentService.Infrastructure/ContentService.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/UserService/">
+    <Project Path="src/UserService/UserService.API/UserService.API.csproj" />
+    <Project Path="src/UserService/UserService.Application/UserService.Application.csproj" />
+    <Project Path="src/UserService/UserService.Domain/UserService.Domain.csproj" />
+    <Project Path="src/UserService/UserService.Infrastructure/UserService.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/ApiGateway/">
+    <Project Path="src/ApiGateway/ApiGateway.csproj" Id="9b5df8c7-88a2-4cf8-b626-52ce83658d76" />
+  </Folder>
 </Solution>
