@@ -1,0 +1,102 @@
+<div class="layout">
+  <section class="card">
+    <h2>Додати</h2>
+
+    <div class="tabs">
+      <button type="button" [class.active]="kind() === 'article'" (click)="kind.set('article')">Стаття</button>
+      <button type="button" [class.active]="kind() === 'video'" (click)="kind.set('video')">Відео</button>
+    </div>
+
+    @if (kind() === 'article') {
+      <form [formGroup]="articleForm" (ngSubmit)="submit()" novalidate>
+        <div class="field">
+          <label for="a-title">Заголовок</label>
+          <input id="a-title" formControlName="title" />
+          @if (articleForm.controls.title.touched && articleForm.controls.title.invalid) {
+            <span class="hint">Від 1 до 200 символів</span>
+          }
+        </div>
+        <div class="field">
+          <label for="a-body">Текст</label>
+          <textarea id="a-body" rows="6" formControlName="body"></textarea>
+          @if (articleForm.controls.body.touched && articleForm.controls.body.invalid) {
+            <span class="hint">Напиши текст статті</span>
+          }
+        </div>
+        <button class="btn btn-block" type="submit" [disabled]="saving()">
+          {{ saving() ? 'Публікуємо…' : 'Опублікувати статтю' }}
+        </button>
+      </form>
+    } @else {
+      <form [formGroup]="videoForm" (ngSubmit)="submit()" novalidate>
+        <div class="field">
+          <label for="v-title">Заголовок</label>
+          <input id="v-title" formControlName="title" />
+          @if (videoForm.controls.title.touched && videoForm.controls.title.invalid) {
+            <span class="hint">Від 1 до 200 символів</span>
+          }
+        </div>
+        <div class="field">
+          <label for="v-url">Посилання</label>
+          <input id="v-url" type="url" placeholder="https://…" formControlName="url" />
+          @if (videoForm.controls.url.touched && videoForm.controls.url.invalid) {
+            <span class="hint">Потрібне http або https посилання</span>
+          }
+        </div>
+        <div class="field">
+          <label for="v-duration">Тривалість, секунд</label>
+          <input id="v-duration" type="number" min="1" formControlName="durationSeconds" />
+          @if (videoForm.controls.durationSeconds.touched && videoForm.controls.durationSeconds.invalid) {
+            <span class="hint">Більше 0</span>
+          }
+        </div>
+        <button class="btn btn-block" type="submit" [disabled]="saving()">
+          {{ saving() ? 'Додаємо…' : 'Додати відео' }}
+        </button>
+      </form>
+    }
+  </section>
+
+  <section>
+    <div class="list-head">
+      <h1>Контент</h1>
+      <div class="tabs small">
+        <button type="button" [class.active]="filter() === 'all'" (click)="filter.set('all')">Усе</button>
+        <button type="button" [class.active]="filter() === 'mine'" (click)="filter.set('mine')">Моє</button>
+      </div>
+    </div>
+
+    @if (loading()) {
+      <p class="muted">Завантаження…</p>
+    } @else {
+      @for (item of visible(); track item.id) {
+        <article class="card item">
+          <div class="item-head">
+            <span class="badge" [class.video]="item.type === 'video'">
+              {{ item.type === 'video' ? 'Відео' : 'Стаття' }}
+            </span>
+            <span class="muted small-text">
+              {{ item.createdAt | date: 'dd.MM.yyyy HH:mm' }}
+              @if (isMine(item)) { · <strong>моє</strong> }
+            </span>
+          </div>
+
+          <h2>{{ item.title }}</h2>
+
+          @if (item.type === 'video') {
+            <p>
+              <a [href]="item.url" target="_blank" rel="noopener">{{ item.url }}</a>
+              <span class="muted"> · {{ formatDuration(item.durationSeconds) }}</span>
+            </p>
+          } @else {
+            <p class="body">{{ item.body }}</p>
+          }
+        </article>
+      } @empty {
+        <div class="card empty">
+          <p class="muted">{{ filter() === 'mine' ? 'Ти ще нічого не додав.' : 'Поки що порожньо. Додай перший запис.' }}</p>
+        </div>
+      }
+    }
+  </section>
+</div>

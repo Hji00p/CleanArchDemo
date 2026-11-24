@@ -1,0 +1,27 @@
+<div class="card auth-card">
+  <h1>Вхід</h1>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="field">
+      <label for="login">Логін</label>
+      <input id="login" formControlName="login" autocomplete="username" />
+      @if (form.controls.login.touched && form.controls.login.invalid) {
+        <span class="hint">Введи логін</span>
+      }
+    </div>
+
+    <div class="field">
+      <label for="password">Пароль</label>
+      <input id="password" type="password" formControlName="password" autocomplete="current-password" />
+      @if (form.controls.password.touched && form.controls.password.invalid) {
+        <span class="hint">Введи пароль</span>
+      }
+    </div>
+
+    <button class="btn btn-block" type="submit" [disabled]="loading()">
+      {{ loading() ? 'Входимо…' : 'Увійти' }}
+    </button>
+  </form>
+
+  <p class="muted">Немає акаунта? <a routerLink="/register">Зареєструватися</a></p>
+</div>

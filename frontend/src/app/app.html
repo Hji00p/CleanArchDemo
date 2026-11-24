@@ -1,0 +1,17 @@
+<header class="topbar">
+  <a class="brand" routerLink="/">CleanArch<span>Demo</span></a>
+
+  <nav>
+    @if (auth.isLoggedIn()) {
+      <span class="user">{{ auth.userName() }}</span>
+      <button type="button" class="btn btn-ghost" (click)="logout()">Вийти</button>
+    } @else {
+      <a routerLink="/login" routerLinkActive="active">Вхід</a>
+      <a routerLink="/register" routerLinkActive="active">Реєстрація</a>
+    }
+  </nav>
+</header>
+
+<main class="page">
+  <router-outlet />
+</main>
