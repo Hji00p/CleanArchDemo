@@ -2,6 +2,7 @@
   <Folder Name="/Solution Items/">
     <File Path=".gitignore" />
     <File Path="README.md" />
+    <File Path="README.uk.md" />
     <File Path="RUNNING.md" />
   </Folder>
   <Folder Name="/Solution Items/docs/">

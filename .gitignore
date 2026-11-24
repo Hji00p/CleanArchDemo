@@ -25,3 +25,8 @@ coverage*/
 ## Secrets and local settings
 appsettings.*.local.json
 .env
+
+## Local-only Ukrainian docs
+*.uk.md
+RUNNING.md
+docs/

@@ -1,91 +1,92 @@
 # CleanArchDemo
 
-Навчальний проєкт: два мікросервіси на **.NET 10** за принципами **Clean Architecture**,
-**API Gateway** на YARP і фронтенд на **Angular 21**.
-
-- **UserService** — реєстрація, вхід, видача JWT. PostgreSQL + EF Core.
-- **ContentService** — статті та відео. MongoDB. Доступ лише з JWT.
-- **ApiGateway** — єдина точка входу, проксує запити до сервісів.
-- **frontend** — Angular-клієнт з ngx-toastr.
+Two .NET 10 microservices built with Clean Architecture, a YARP API gateway, and an Angular 21 frontend.
 
 ```mermaid
 flowchart LR
-    B[Браузер<br/>Angular :4200] -->|/api/*| G[ApiGateway<br/>YARP :5161]
+    B[Angular :4200] -->|/api/*| G[ApiGateway :5161]
     G -->|/api/users/*| U[UserService :5184]
     G -->|/api/content/*| C[ContentService :5137]
-    U --> P[(PostgreSQL :5433)]
-    C --> M[(MongoDB :27017)]
-    U -. видає JWT .-> B
-    B -. Bearer JWT .-> C
+    U --> P[(PostgreSQL)]
+    C --> M[(MongoDB)]
 ```
 
-## Швидкий старт
+- **UserService**: registration, login, issues JWT. PostgreSQL + EF Core.
+- **ContentService**: articles and videos, JWT-protected. MongoDB.
+- **ApiGateway**: single entry point (YARP reverse proxy).
+- **frontend**: Angular client with ngx-toastr notifications.
 
-Покроково з демо-акаунтом: **[RUNNING.md](RUNNING.md)**.
+## Tech stack
 
-Коротко: бази даних → три сервіси (профіль **New Profile** у Visual Studio) → `cd frontend; npm start` → http://localhost:4200.
+.NET 10 · ASP.NET Core · MediatR · FluentValidation · EF Core / Npgsql · MongoDB.Driver · JWT + BCrypt · YARP · Swagger · Angular 21 (standalone, signals, zoneless) · ngx-toastr
 
-## Документація
+## Getting started
 
-### З чого почати читати
+**Prerequisites:** .NET 10 SDK, Node.js 24, PostgreSQL, Docker (for MongoDB).
 
-Якщо ви вперше бачите проєкт, читайте в такому порядку:
+1. Start MongoDB:
 
-1. **[Концепції простими словами](docs/concepts.md)** — що таке Clean Architecture, DI, CQRS, MediatR, JWT, DTO і навіщо кожне з них тут.
-2. **[Архітектура](docs/architecture.md)** — як ці ідеї складені в систему.
-3. **[Покроковий розбір коду](docs/walkthrough.md)** — реєстрація, вхід, створення статті й отримання списку від кнопки до бази, з кодом кожного файлу.
-4. **[Program.cs і DI](docs/startup.md)** — як сервіси збираються при старті.
-5. Далі — довідкові документи за потребою.
+   ```bash
+   docker run -d --name contentplatform-mongo -p 27017:27017 mongo:7
+   ```
 
-### Усі документи
+2. Configure secrets (`Jwt:*` values must match in both services, secret ≥ 32 chars):
 
-| Документ | Про що |
-|---|---|
-| [Концепції](docs/concepts.md) | 17 ідей, на яких побудований проєкт, з прикладами з коду |
-| [Покроковий розбір](docs/walkthrough.md) | 4 сценарії через усі файли; що відбувається при помилці |
-| [Program.cs і DI](docs/startup.md) | Рядок за рядком: реєстрація сервісів, порядок middleware, конфігурація, карта залежностей |
-| [Архітектура](docs/architecture.md) | Шари, залежності, CQRS, MediatR, потік запиту, ключові рішення |
-| [UserService](docs/user-service.md) | Користувачі, паролі, JWT, PostgreSQL, міграції |
-| [ContentService](docs/content-service.md) | Статті й відео, MongoDB, поліморфізм, DTO |
-| [ApiGateway](docs/api-gateway.md) | Маршрути YARP, як додати новий сервіс |
-| [Довідник API](docs/api-reference.md) | Усі ендпойнти, запити, відповіді, коди помилок |
-| [Фронтенд](docs/frontend.md) | Структура Angular-застосунку, auth, interceptor-и, toastr |
-| [Розробка](docs/development.md) | Налаштування, секрети, міграції, як додати фічу, відомі обмеження |
-| [Якщо щось не працює](docs/troubleshooting.md) | Типові помилки: симптом, причина, рішення |
+   ```bash
+   cd src/UserService/UserService.API
+   dotnet user-secrets set "ConnectionStrings:Default" "Host=localhost;Port=5432;Database=UserServiceDb;Username=postgres;Password=<password>"
+   dotnet user-secrets set "Jwt:Secret" "<random 32+ char string>"
+   dotnet user-secrets set "Jwt:Issuer" "UserService"
+   dotnet user-secrets set "Jwt:Audience" "MyApp"
 
-## Технології
+   cd ../../ContentService/ContentService.API
+   dotnet user-secrets set "MongoDB:ConnectionString" "mongodb://localhost:27017"
+   dotnet user-secrets set "MongoDB:DatabaseName" "ContentServiceDb"
+   dotnet user-secrets set "Jwt:Secret" "<same as above>"
+   dotnet user-secrets set "Jwt:Issuer" "UserService"
+   dotnet user-secrets set "Jwt:Audience" "MyApp"
+   ```
 
-| Шар | Що використано |
-|---|---|
-| Бекенд | .NET 10, ASP.NET Core, MediatR 15, FluentValidation 12 |
-| Дані | EF Core 10 + Npgsql (PostgreSQL), MongoDB.Driver 3 |
-| Безпека | JWT (HS256), BCrypt для паролів |
-| Gateway | YARP 2.3 |
-| Документація API | Swashbuckle (Swagger UI) |
-| Фронтенд | Angular 21 (standalone, signals, zoneless), ngx-toastr 20 |
+3. Create the database:
 
-## Структура репозиторію
+   ```bash
+   dotnet ef database update --project src/UserService/UserService.Infrastructure --startup-project src/UserService/UserService.API
+   ```
+
+4. Run the backend (or use the multi-startup profile in Visual Studio):
+
+   ```bash
+   dotnet run --project src/UserService/UserService.API --launch-profile http
+   dotnet run --project src/ContentService/ContentService.API --launch-profile http
+   dotnet run --project src/ApiGateway --launch-profile http
+   ```
+
+5. Run the frontend and open http://localhost:4200:
+
+   ```bash
+   cd frontend
+   npm install
+   npm start
+   ```
+
+## API
+
+| Method | Path | Auth |
+|---|---|---|
+| POST | `/api/users/register` | — |
+| POST | `/api/users/login` | — |
+| GET | `/api/content` | Bearer |
+| POST | `/api/content/article` | Bearer |
+| POST | `/api/content/video` | Bearer |
+
+Swagger: http://localhost:5184/swagger, http://localhost:5137/swagger. Sample requests: [`src/ApiGateway/ApiGateway.http`](src/ApiGateway/ApiGateway.http).
+
+## Project structure
 
 ```
-CleanArchDemo/
-├── src/
-│   ├── ApiGateway/                         YARP reverse proxy
-│   ├── UserService/
-│   │   ├── UserService.API/                контролери, middleware, Program.cs
-│   │   ├── UserService.Application/        команди, валідатори, інтерфейси
-│   │   ├── UserService.Domain/             сутність User, UserId, IUserRepository
-│   │   └── UserService.Infrastructure/     EF Core, репозиторій, JWT, BCrypt, міграції
-│   └── ContentService/
-│       ├── ContentService.API/             контролер, middleware, Program.cs
-│       ├── ContentService.Application/     команди, запит, DTO, валідатори
-│       ├── ContentService.Domain/          ContentItem, Article, Video
-│       └── ContentService.Infrastructure/  MongoDB, репозиторій
-├── frontend/                               Angular-клієнт
-├── docs/                                   ця документація
-├── README.md
-├── RUNNING.md                              як запустити і перевірити
-└── CleanArchDemo.slnx                      рішення (формат .slnx)
+src/
+  ApiGateway/
+  UserService/      API · Application · Domain · Infrastructure
+  ContentService/   API · Application · Domain · Infrastructure
+frontend/           Angular app
 ```
-
-Папки на диску збігаються з папками в Solution Explorer Visual Studio.
-Документація теж видна у Visual Studio, у вузлі **Solution Items**.
