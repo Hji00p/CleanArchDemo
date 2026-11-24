@@ -9,7 +9,13 @@ public class User
     public string PasswordHash { get; private set; }
     public string FullName { get; private set; }
 
-    private User() { } // для EF Core
+    // Для EF Core: він сам заповнить властивості з бази одразу після створення обʼєкта
+    private User()
+    {
+        Login = null!;
+        PasswordHash = null!;
+        FullName = null!;
+    }
 
     public User(UserId id, string login, string passwordHash, string fullName)
     {
