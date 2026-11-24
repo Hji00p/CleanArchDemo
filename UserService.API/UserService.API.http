@@ -1,0 +1,22 @@
+@UserService.API_HostAddress = http://localhost:5184
+
+POST {{UserService.API_HostAddress}}/api/users/register
+Content-Type: application/json
+
+{
+  "login": "john",
+  "password": "Password123",
+  "fullName": "John Doe"
+}
+
+###
+
+POST {{UserService.API_HostAddress}}/api/users/login
+Content-Type: application/json
+
+{
+  "login": "john",
+  "password": "Password123"
+}
+
+###

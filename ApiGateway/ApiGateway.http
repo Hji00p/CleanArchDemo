@@ -1,0 +1,48 @@
+@Gateway = http://localhost:5161
+
+### Реєстрація
+POST {{Gateway}}/api/users/register
+Content-Type: application/json
+
+{
+  "login": "john",
+  "password": "Password123",
+  "fullName": "John Doe"
+}
+
+### Логін (скопіюй token з відповіді в @token нижче)
+POST {{Gateway}}/api/users/login
+Content-Type: application/json
+
+{
+  "login": "john",
+  "password": "Password123"
+}
+
+###
+@token = PASTE_TOKEN_HERE
+
+### Створити статтю
+POST {{Gateway}}/api/content/article
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Перша стаття",
+  "body": "Текст статті"
+}
+
+### Створити відео
+POST {{Gateway}}/api/content/video
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Перше відео",
+  "url": "https://example.com/video.mp4",
+  "durationSeconds": 120
+}
+
+### Весь контент
+GET {{Gateway}}/api/content
+Authorization: Bearer {{token}}

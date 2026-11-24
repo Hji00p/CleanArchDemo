@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/ContentService/">
+    <Project Path="ContentService.API/ContentService.API.csproj" />
+    <Project Path="ContentService.Application/ContentService.Application.csproj" />
+    <Project Path="ContentService.Domain/ContentService.Domain.csproj" />
+    <Project Path="ContentService.Infrastructure/ContentService.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/UserService/">
+    <Project Path="UserService.API/UserService.API.csproj" />
+    <Project Path="UserService.Application/UserService.Application.csproj" />
+    <Project Path="UserService.Domain/UserService.Domain.csproj" />
+    <Project Path="UserService.Infrastructure/UserService.Infrastructure.csproj" />
+  </Folder>
+  <Project Path="ApiGateway/ApiGateway.csproj" Id="9b5df8c7-88a2-4cf8-b626-52ce83658d76" />
+</Solution>
